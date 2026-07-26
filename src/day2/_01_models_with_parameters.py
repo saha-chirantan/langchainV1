@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from langchain_openrouter import ChatOpenRouter
 from langchain_core.messages import SystemMessage, HumanMessage
 load_dotenv()
+from pprint import pprint
 
 
 from langchain.chat_models import init_chat_model
@@ -21,4 +22,10 @@ messages = [
 ]
 
 response_from_model = model.invoke(messages)
-print(response_from_model)
+pprint(response_from_model)
+
+print("\n\n=====================================")
+print("text:             ", response_from_model.text)
+print("content_blocks:   ", response_from_model.content_blocks)
+print("id:               ", response_from_model.id)
+print("tool_calls:       ", response_from_model.tool_calls)
