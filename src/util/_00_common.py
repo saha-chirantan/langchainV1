@@ -26,6 +26,7 @@ def get_agent(model_name: str):
     print(f'\n[Inside get_agent()]: Printing model profile')
     print(f'Does the model support Structured Output?: {model.profile['structured_output']}\n')
     agent = create_agent(
-        model=model
+        model=model,
+        
 
     )
