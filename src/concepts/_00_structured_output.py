@@ -67,7 +67,7 @@ class BookingRequest(BaseModel):
     ticket_count: int = Field(description="Number of tickets to be booked or cancelled", default=1)
 
 
-openai_model_with_structured_output = openai_model.with_structured_output(BookingRequest)
+openai_model_with_structured_output = openai_model.with_structured_output(BookingRequest, method="json_schema")
 
 for message in booking_requests:
     structured_response = openai_model_with_structured_output.invoke(message)
