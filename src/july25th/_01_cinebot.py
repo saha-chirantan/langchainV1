@@ -98,3 +98,78 @@ customer_name='Aisha' movie_title='Oppenheimer' action='cancel' ticket_count=1
 from langchain.agents.structured_output import ProviderStrategy, ToolStrategy
 
 provider_strategy_model = openai_model.with_structured_output(BookingRequest, strategy=ProviderStrategy[BookingRequest])
+
+# Provider strategy will work ONLY when the model natively supports structured output
+# For example : if model is something that does not support structured_output, then we need to use ToolStrategy
+
+"""
+unsupported_model = init_chat_model("openai:gpt-3.5-turbo")
+print(unsupported_model.profile)
+
+Output 
+--------------
+{'name': 'GPT-3.5-turbo',
+ 'release_date': '2023-03-01',
+ 'last_updated': '2023-11-06',
+ 'open_weights': False,
+ 'max_input_tokens': 16385,
+ 'max_output_tokens': 4096,
+ 'text_inputs': True,
+ 'image_inputs': False,
+ 'audio_inputs': False,
+ 'video_inputs': False,
+ 'text_outputs': True,
+ 'image_outputs': False,
+ 'audio_outputs': False,
+ 'video_outputs': False,
+ 'reasoning_output': False,
+ 'tool_calling': False,
+
+ 'structured_output': False,
+
+ 'attachment': False,
+ 'temperature': True,
+ 'image_url_inputs': False,
+ 'pdf_inputs': False,
+ 'pdf_tool_message': False,
+ 'image_tool_message': False,
+ 'tool_choice': True,
+ 'tool_call_streaming': True}
+
+ 
+ tool_strategy_model = unsupported_model.with_structured_output(BookingRequest, strategy=ToolStrategy[BookingRequest])
+
+ """
+from langchain.agents import create_agent
+from pprint import pprint
+
+class MeetingAction(BaseModel):
+    """Action items extracted from a meeting transcript."""
+    task: str = Field(description="The specific task to be completed")
+    assignee: str = Field(description="Person responsible for the task")
+    priority: Literal["low", "medium", "high"] = Field(description="Priority level")
+
+agent = create_agent(
+    model="gpt-3.5-turbo",
+    tools=[],
+    response_format=ToolStrategy(
+        schema=MeetingAction,
+        tool_message_content="Action item captured and added to meeting notes!"
+    )
+)
+
+response = agent.invoke({
+    "messages": [{"role": "user", "content": "From our meeting: Sarah needs to update the project timeline as soon as possible"}]
+})
+
+print(f"Pretty printed response on using ToolStrategy")
+pprint(response)
+
+#######################################################################################################
+###########      SECTION 4 - Adding tools now to the barebone cinebot
+#######################################################################################################
+
+from langchain.tools import tool
+
+def peek_Showtimes(movie: str) -> str:
+    
