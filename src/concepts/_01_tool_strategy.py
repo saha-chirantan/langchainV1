@@ -9,7 +9,7 @@ from langchain.tools import tool
 from langchain.agents import create_agent
 
 from typing import Union
-from langchain.agents.structured_output import ToolStrategy
+from langchain.agents.structured_output import ToolStrategy, ProviderStrategy
 
 
 class BookingRequest(BaseModel):
